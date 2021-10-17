@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import './components/main/Main.css';
 import Main from './components/main/Main';
+import Call from './components/call/Call';
 import NotFound from './components/NotFound';
 
 import useLogin from './functions/login';
@@ -21,6 +22,8 @@ function App() {
       {/* <ClientInfoComponent />  */}
       <Switch>
         <Route exact path='/' component={Main} />
+
+        <Route exact path='/call' component={Call} />
 
         <Route component={NotFound} status={404} />
       </Switch>

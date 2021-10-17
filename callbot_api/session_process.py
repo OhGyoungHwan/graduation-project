@@ -12,7 +12,7 @@ def create_session(session_name):
 
 
 def update_session_time(session_name):
-    session_expire_period = 1  # 분
+    session_expire_period = 30  # 분
     session[session_name][0] = datetime.datetime.now() + datetime.timedelta(minutes=session_expire_period)
 
 

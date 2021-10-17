@@ -1,7 +1,10 @@
 import Box from '@material-ui/core/Box';
 import { React, useState } from 'react';
 
-import { makeStyles, useTheme, useMediaQuery, Typography } from '@material-ui/core';
+import { makeStyles, useTheme, useMediaQuery, Button } from '@material-ui/core';
+
+import { onClickLink } from '../../../functions/util';
+import * as root from '../../../rootValue';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,6 +17,13 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '250px',
     maxWidth: '1000px',
   },
+  button: {
+    '&:hover': {
+      background: root.HoberColor,
+    },
+    background: root.PrimaryColor,
+    color: '#fff',
+  },
 }));
 
 function Body() {
@@ -24,7 +34,9 @@ function Body() {
 
   return (
     <Box className={classes.root}>
-      <Typography>메인</Typography>
+      <Button className={classes.button} onClick={onClickLink('/call')}>
+        통화
+      </Button>
     </Box>
   );
 }

@@ -4,8 +4,8 @@ import React from 'react';
 
 import { useTheme, useMediaQuery } from '@material-ui/core';
 
-import Body from './Body/Body';
 import Header from '../header/Header';
+import Body from './Body/Body';
 
 function App() {
   const theme = useTheme();

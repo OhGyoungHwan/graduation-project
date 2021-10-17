@@ -8,11 +8,11 @@ import { createStore, applyMiddleware } from 'redux';
 import reducers from './reducers';
 import thunk from 'redux-thunk';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 
 import * as root from './rootValue';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: 'NotoSansKR-Medium',
   },
@@ -44,5 +44,5 @@ ReactDOM.render(
       <App />
     </Provider>
   </MuiThemeProvider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

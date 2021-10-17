@@ -18,14 +18,14 @@ class CallbotProcess(MethodView):
         return None
 
     def post(self):
-        print("debug")
-
         req = request.get_json(force=True)  # parse json string
         session_name = req["session_name"]
         user_conversation = req["conversation"]
-
+        print(session_name + "(user): " + user_conversation)
+        
         session_manager(session_name)
         callbot_reply = response_callbot(session_name, user_conversation)
+        print(session_name + "(callbot): " + callbot_reply)
 
         audios_buf = get_english_audios_buf(callbot_reply)
 
