@@ -1,3 +1,6 @@
+import jquery from "jquery";
+import $ from "jquery";
+
 /*!
  *
  * WebRTC Lab
@@ -5,8 +8,8 @@
  *
  */
 $(function () {
-  if (typeof webkitSpeechRecognition !== 'function') {
-    alert('크롬에서만 동작 합니다.');
+  if (typeof webkitSpeechRecognition !== "function") {
+    alert("크롬에서만 동작 합니다.");
     return false;
   }
 
@@ -15,20 +18,20 @@ $(function () {
   const ONE_LINE = /\n/g;
 
   const recognition = new webkitSpeechRecognition();
-  const language = 'en-US';
-  const $audio = document.querySelector('#audio');
-  const $btnMic = document.querySelector('#btn-mic');
-  const $resultWrap = document.querySelector('#result');
-  const $iconMusic = document.querySelector('#icon-music');
-  const $btnSub1 = document.querySelector('#sub1');
-  const $btnSub2 = document.querySelector('#sub2');
-  const $btnSub3 = document.querySelector('#sub3');
-  const $btnSub4 = document.querySelector('#sub4');
-  const $record = document.querySelector('#list-record');
+  const language = "en-US";
+  const $audio = document.querySelector("#audio");
+  const $btnMic = document.querySelector("#btn-mic");
+  const $resultWrap = document.querySelector("#result");
+  const $iconMusic = document.querySelector("#icon-music");
+  const $btnSub1 = document.querySelector("#sub1");
+  const $btnSub2 = document.querySelector("#sub2");
+  const $btnSub3 = document.querySelector("#sub3");
+  const $btnSub4 = document.querySelector("#sub4");
+  const $record = document.querySelector("#list-record");
 
   let isRecognizing = false;
   let ignoreEndProcess = false;
-  let finalTranscript = '';
+  let finalTranscript = "";
 
   recognition.continuous = true;
   recognition.interimResults = true;
@@ -37,16 +40,16 @@ $(function () {
    * 음성 인식 시작 처리
    */
   recognition.onstart = function () {
-    console.log('onstart', arguments);
+    console.log("onstart", arguments);
     isRecognizing = true;
-    $btnMic.className = 'btn on btn-primary';
+    $btnMic.className = "btn on btn-primary";
   };
 
   /**
    * 음성 인식 종료 처리
    */
   recognition.onend = function () {
-    console.log('onend', arguments);
+    console.log("onend", arguments);
     isRecognizing = false;
 
     if (ignoreEndProcess) {
@@ -54,9 +57,9 @@ $(function () {
     }
 
     // DO end process
-    $btnMic.className = 'btn off btn-primary';
+    $btnMic.className = "btn off btn-primary";
     if (!finalTranscript) {
-      console.log('empty finalTranscript');
+      console.log("empty finalTranscript");
       return false;
     }
   };
@@ -65,10 +68,10 @@ $(function () {
    * 음성 인식 결과 처리
    */
   recognition.onresult = function (event) {
-    console.log('onresult', event);
+    console.log("onresult", event);
 
-    let interimTranscript = '';
-    if (typeof event.results === 'undefined') {
+    let interimTranscript = "";
+    if (typeof event.results === "undefined") {
       recognition.onend = null;
       recognition.stop();
       return;
@@ -79,7 +82,7 @@ $(function () {
 
       if (event.results[i].isFinal) {
         finalTranscript = transcript;
-        $record.innerHTML += '<div>You : '+finalTranscript+'</div>';
+        $record.innerHTML += "<div>You : " + finalTranscript + "</div>";
       } else {
         interimTranscript = transcript;
       }
@@ -88,8 +91,8 @@ $(function () {
     finalTranscript = capitalize(finalTranscript);
     final_span.innerHTML = linebreak(finalTranscript);
     interim_span.innerHTML = linebreak(interimTranscript);
-    console.log('finalTranscript', finalTranscript);
-    console.log('interimTranscript', interimTranscript);
+    console.log("finalTranscript", finalTranscript);
+    console.log("interimTranscript", interimTranscript);
     fireCommand(finalTranscript);
   };
 
@@ -97,13 +100,13 @@ $(function () {
    * 음성 인식 에러 처리
    */
   recognition.onerror = function (event) {
-    console.log('onerror', event);
+    console.log("onerror", event);
 
     if (event.error.match(/no-speech|audio-capture|not-allowed/)) {
       ignoreEndProcess = true;
     }
 
-    $btnMic.className = 'btn off btn-primary';
+    $btnMic.className = "btn off btn-primary";
   };
 
   /**
@@ -111,10 +114,10 @@ $(function () {
    * @param string
    */
   function fireCommand(string) {
-    if (string.endsWith('레드')) {
-      $resultWrap.className = 'red';
-    } else if (string.endsWith('Bye')){
-            window.location.reload();
+    if (string.endsWith("레드")) {
+      $resultWrap.className = "red";
+    } else if (string.endsWith("Bye")) {
+      window.location.reload();
     }
   }
 
@@ -123,7 +126,7 @@ $(function () {
    * @param {string} s
    */
   function linebreak(s) {
-    return s.replace(TWO_LINE, '<p></p>').replace(ONE_LINE, '<br>');
+    return s.replace(TWO_LINE, "<p></p>").replace(ONE_LINE, "<br>");
   }
 
   /**
@@ -148,9 +151,9 @@ $(function () {
     recognition.start();
     ignoreEndProcess = false;
 
-    finalTranscript = '';
-    final_span.innerHTML = '';
-    interim_span.innerHTML = '';
+    finalTranscript = "";
+    final_span.innerHTML = "";
+    interim_span.innerHTML = "";
   }
 
   /**
@@ -158,12 +161,12 @@ $(function () {
    * 지원: 크롬, 사파리, 오페라, 엣지
    */
   function textToSpeech(text) {
-    console.log('textToSpeech', arguments);
+    console.log("textToSpeech", arguments);
 
     // speechSynthesis options
     const u = new SpeechSynthesisUtterance();
     u.text = text;
-    u.lang = 'en-US';
+    u.lang = "en-US";
     u.rate = 1;
     // u.onend = function(event) {
     //   log('Finished in ' + event.elapsedTime + ' seconds.');
@@ -178,20 +181,37 @@ $(function () {
    * 초기 바인딩
    */
   function initialize() {
-    const $btnTTS = document.querySelector('#btn-tts');
-    const defaultMsg = '전 음성 인식된 글자를 읽습니다.';
+    const $btnTTS = document.querySelector("#btn-tts");
+    const defaultMsg = "전 음성 인식된 글자를 읽습니다.";
 
-    $btnTTS.addEventListener('click', () => {
+    $btnTTS.addEventListener("click", () => {
       const text = final_span.innerText || defaultMsg;
       textToSpeech(text);
     });
 
-    $btnMic.addEventListener('click', start);
-    $btnSub1.addEventListener('click', start);
-    $btnSub2.addEventListener('click', start);
-    $btnSub3.addEventListener('click', start);
-    $btnSub4.addEventListener('click', start);
+    $btnMic.addEventListener("click", start);
+    $btnSub1.addEventListener("click", start);
+    $btnSub2.addEventListener("click", start);
+    $btnSub3.addEventListener("click", start);
+    $btnSub4.addEventListener("click", start);
   }
 
   initialize();
 });
+
+function btn_subject_ck(value) {
+  console.log(value);
+  document.getElementById("dialog-page").style.visibility = "visible";
+  document.getElementById("main-page").remove();
+}
+
+function btn_list_ck() {
+  if (document.getElementById("list-area").style.visibility == "visible") {
+    document.getElementById("list-area").style.height = "0px";
+    document.getElementById("list-area").style.visibility = "hidden";
+    document.getElementById("list-area").className = "";
+  } else {
+    document.getElementById("list-area").style.visibility = "visible";
+    document.getElementById("list-area").className = "col-8 h-100";
+  }
+}

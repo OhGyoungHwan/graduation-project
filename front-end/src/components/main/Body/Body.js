@@ -3,6 +3,7 @@ import { React, useState } from 'react';
 
 import { makeStyles, useTheme, useMediaQuery, Button } from '@material-ui/core';
 
+import Content from './Content';
 import { onClickLink } from '../../../functions/util';
 import * as root from '../../../rootValue';
 
@@ -37,6 +38,7 @@ function Body() {
       <Button className={classes.button} onClick={onClickLink('/call')}>
         통화
       </Button>
+      <Content />
     </Box>
   );
 }
