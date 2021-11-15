@@ -35,9 +35,6 @@ function Body() {
 
   return (
     <Box className={classes.root}>
-      <Button className={classes.button} onClick={onClickLink('/call')}>
-        통화
-      </Button>
       <Content />
     </Box>
   );
