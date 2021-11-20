@@ -201,14 +201,12 @@ function MainPage() {
 
     let converationArrayAdd = conversationArray;
     converationArrayAdd.push(conversation);
-    console.log('conversationArray', conversationArray);
 
     try {
       const response = await axios.post('/api/caii_en/request/conversation', {
         session_name: sessionName,
         conversation: conversation,
       });
-      console.log('response', response);
 
       const responseBlob = response.data.blob.buffer.data;
       const blob = new Blob([new Uint8Array(responseBlob)], {
