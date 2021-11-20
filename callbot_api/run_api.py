@@ -7,8 +7,7 @@ from flask_cors import CORS
 
 import ssl
 
-from session_process import session_manager
-from session_process import response_callbot
+from session_process import session_manager, response_callbot, get_last_conversation
 
 from speech_english import get_english_audios_buf
 
@@ -30,7 +29,26 @@ class CallbotProcess(MethodView):
         audios_buf = get_english_audios_buf(callbot_reply)
 
         return Response(audios_buf, mimetype="audio/wav")
-    
+
+
+class CallbotHistory(MethodView):
+    def get(self):
+        return None
+
+    def post(self):
+        req = request.get_json(force=True)  # parse json string
+        session_name = req["session_name"]
+        print("history", session_name)
+
+        last_conversation = get_last_conversation(session_name)
+        print("last", last_conversation)
+
+        result = {
+            "AI_conversation": last_conversation,
+        }
+        result = json.dumps(result, ensure_ascii=False, indent="\t")
+        return make_response(result)
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -38,6 +56,7 @@ def create_app(test_config=None):
 
     api = Api(app)
     api.add_resource(CallbotProcess, "/callbot")
+    api.add_resource(CallbotHistory, "/callbot/conversationHistory")
 
     return app
 

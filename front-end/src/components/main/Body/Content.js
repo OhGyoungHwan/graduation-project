@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 import Sl1 from './img/sl1.jpg';
 import Sl2 from './img/sl2.jpg';
@@ -208,6 +209,7 @@ function MainPage() {
   const [loading, setLoading] = useState(false);
   const [voiceBlob, setVoiceBlob] = useState('');
   const [requestFailed, setRequestFailed] = useState(false);
+  const [conversationArray, setConversationArray] = useState([]);
 
   const matches = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -217,18 +219,29 @@ function MainPage() {
     setPlaying(false);
     setLoading(true);
 
+    let converationArrayAdd = conversationArray;
+    converationArrayAdd.push(conversation);
+    console.log('conversationArray', conversationArray);
+
     try {
       const response = await axios.post('/api/caii_en/request/conversation', {
         session_name: sessionName,
         conversation: conversation,
       });
+      console.log('response', response);
 
-      const data = response.data.buffer.data;
-      const blob = new Blob([new Uint8Array(data)], { type: 'audio/wav' });
+      const responseBlob = response.data.blob.buffer.data;
+      const blob = new Blob([new Uint8Array(responseBlob)], {
+        type: 'audio/wav',
+      });
 
       const url = URL.createObjectURL(blob);
 
       setVoiceBlob(url);
+
+      const responseAIConversation = response.data.AIConversation;
+      converationArrayAdd.push(responseAIConversation);
+      setConversationArray(converationArrayAdd);
 
       return url;
     } catch (e) {
@@ -472,6 +485,8 @@ function MainPage() {
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color='inherit' />
       </Backdrop>
+
+      {console.log('conversationArray', conversationArray)}
     </Box>
   );
 }
