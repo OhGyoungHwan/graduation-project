@@ -17,7 +17,7 @@ import {
   Container,
   Row,
   Col,
-  Carousel,
+  Card,
   Button,
   ButtonGroup,
   ToggleButton,
@@ -51,7 +51,7 @@ function btn_list_ck() {
     document.getElementById('list-area').className = '';
   } else {
     document.getElementById('list-area').style.visibility = 'visible';
-    document.getElementById('list-area').className = 'col-8 h-100';
+    document.getElementById('list-area').className = 'col-8 h-100 w-100 m-0';
   }
 }
 
@@ -59,10 +59,10 @@ function ToggleButtonExample() {
   const [radioValue, setRadioValue] = useState('0');
 
   const radios = [
-    { name: '주제1', value: '1' },
-    { name: '주제2', value: '2' },
-    { name: '주제3', value: '3' },
-    { name: '주제4', value: '3' },
+    { name: '여행', value: 'Where can I take a taxi downtown?' },
+    { name: '음식', value: 'Are you ready to order?' },
+    { name: '음악', value: 'What are you listening to?' },
+    { name: '스포츠', value: 'Do you go in for any sports?' },
   ];
   return (
     <ButtonGroup className='mb-2 w-100'>
@@ -77,7 +77,7 @@ function ToggleButtonExample() {
           checked={radioValue === radio.value}
           onChange={(e) => setRadioValue(e.currentTarget.value)}
           onClick={(e) => btn_subject_ck(e.currentTarget.value)}
-          className='w-25'>
+          className='w-25 fs-3'>
           {radio.name}
         </ToggleButton>
       ))}
@@ -95,36 +95,16 @@ function MainContent() {
     <Container className='mt-5 bg-light' id='main-page'>
       <Row>
         <Col>
-          <Carousel>
-            <Carousel.Item>
-              <img className='d-block w-100' src={Sl1} alt='First slide' />
-              <Carousel.Caption>
-                <h3>First slide label</h3>
-                <p>
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
-                </p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img className='d-block w-100' src={Sl2} alt='Second slide' />
-
-              <Carousel.Caption>
-                <h3>Second slide label</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              </Carousel.Caption>
-            </Carousel.Item>
-            <Carousel.Item>
-              <img className='d-block w-100' src={Sl3} alt='Third slide' />
-
-              <Carousel.Caption>
-                <h3>Third slide label</h3>
-                <p>
-                  Praesent commodo cursus magna, vel scelerisque nisl
-                  consectetur.
-                </p>
-              </Carousel.Caption>
-            </Carousel.Item>
-          </Carousel>
+          <Card border="success" className="bg-success text-white">
+              <Card.Img src={Sl1} alt="Card image" />
+              <Card.ImgOverlay>
+                <Card.Title className="fs-3">Caii 영어 콜봇</Card.Title>
+                <Card.Text className="fs-6">
+                  <br/>인공지능과 영어회화를 통해 실력을 기르는<br/><br/> Caii 영어 콜봇 서비스 입니다.<br/><br/>
+                  그럼 먼저 주제를 선택해봅시다.
+                </Card.Text>
+              </Card.ImgOverlay>
+            </Card>
         </Col>
       </Row>
       <Row className='mt-2'>
@@ -138,7 +118,7 @@ function MainContent() {
 
 function MainDialog() {
   return (
-    <Container id='dialog-page' className='bg-light'>
+    <Container id='dialog-page' className='bg-light mt-3'>
       <Row id='dialog'>
         <Col id='speaking-area' className='h-100 m-auto'>
           <Row className='h-75'>
@@ -148,9 +128,9 @@ function MainDialog() {
                   <span className='final' id='final_span'></span>
                   <span className='interim' id='interim_span'></span>
                 </Col>
-                <Col className='col-12 h-25'>
+                <Col className='col-12 h-25 text-center'>
                   <Button id='btn-mic' className='off'>
-                    <BsMic />
+                    <BsMic size="24"/>
                   </Button>
                 </Col>
               </Row>
@@ -182,8 +162,8 @@ function MainDialog() {
             </Col>
           </Row>
         </Col>
-        <Col>
-          <Row id='list-area'>
+        <Col className="p-0">
+          <Row id='list-area' className="w-100 m-0">
             <Col id='list-record' className='bg-warning bg-gradient'></Col>
           </Row>
         </Col>
@@ -485,8 +465,6 @@ function MainPage() {
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color='inherit' />
       </Backdrop>
-
-      {console.log('conversationArray', conversationArray)}
     </Box>
   );
 }

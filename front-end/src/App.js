@@ -1,5 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import 'firebase/analytics';
+import "firebase/messaging";
+
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import './index.css';
 
 import './App.css';
 import './components/main/Main.css';
