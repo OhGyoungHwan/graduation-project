@@ -170,11 +170,11 @@ function MainDialog(props) {
         </Col>
         <Col className="p-0">
           <Row id='list-area' className="w-100 m-0">
-            <Col id='list-record' className='bg-warning bg-gradient' style={{padding: '10px', height: '320px', overflow: 'auto'}}>
+            <Col id='list-record' className='bg-warning bg-gradient' style={{padding: '10px', height: '576px', margin: 0, overflow: 'auto'}}>
               {conversationArray.map((conversation, idx) => (
-                conversation['USER'] !== undefined 
-                ? <MessageRight key={idx} message={conversation['USER']} />
-                : <MessageLeft key={idx} message={conversation['AI']} />
+                conversation['User'] !== undefined 
+                ? <MessageRight key={idx} message={conversation['User']} />
+                : <MessageLeft key={idx} message={conversation['Bot']} />
               ))}
             </Col>
           </Row>
@@ -245,7 +245,7 @@ function MainPage() {
     setLoading(true);
 
     let converationArrayAdd = conversationArray;
-    converationArrayAdd.push({USER: conversation});
+    converationArrayAdd.push({User: conversation});
 
     try {
       const response = await axios.post('/api/caii_en/request/conversation', {
@@ -264,7 +264,7 @@ function MainPage() {
       setVoiceBlob(url);
 
       const responseAIConversation = response.data.AIConversation;
-      converationArrayAdd.push({AI: responseAIConversation});
+      converationArrayAdd.push({Bot: responseAIConversation});
       setConversationArray(converationArrayAdd);
 
       return url;
@@ -495,7 +495,7 @@ function MainPage() {
       setPlaying(true)
 
       const conversationArrayAdd = conversationArray
-      conversationArrayAdd.push({AI: radioValue})
+      conversationArrayAdd.push({Bot: radioValue})
     }
   }, [subject, radioValue])
 
