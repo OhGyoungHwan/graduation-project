@@ -18,11 +18,12 @@ class CallbotProcess(MethodView):
 
     def post(self):
         req = request.get_json(force=True)  # parse json string
+        subject = req["subject"]
         session_name = req["session_name"]
         user_conversation = req["conversation"]
         print(session_name + "(user): " + user_conversation)
         
-        session_manager(session_name)
+        session_manager(subject, session_name)
         callbot_reply = response_callbot(session_name, user_conversation)
         print(session_name + "(callbot): " + callbot_reply)
 
@@ -38,10 +39,8 @@ class CallbotHistory(MethodView):
     def post(self):
         req = request.get_json(force=True)  # parse json string
         session_name = req["session_name"]
-        print("history", session_name)
 
         last_conversation = get_last_conversation(session_name)
-        print("last", last_conversation)
 
         result = {
             "AI_conversation": last_conversation,

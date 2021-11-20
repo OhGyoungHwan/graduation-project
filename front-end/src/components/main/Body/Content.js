@@ -31,12 +31,18 @@ import {
   Snackbar,
   Backdrop,
   CircularProgress,
+  Paper,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import axios from 'axios';
 import ReactPlayer from 'react-player';
+import { MessageLeft, MessageRight } from "./ConversationHistoy";
 
 import Header from '../../header/Header';
+import travel from '../../../sound/travel.wav'
+import food from '../../../sound/food.wav'
+import music from '../../../sound/music.wav'
+import sports from '../../../sound/sports.wav'
 
 function btn_subject_ck(value) {
   console.log(value);
@@ -55,9 +61,7 @@ function btn_list_ck() {
   }
 }
 
-function ToggleButtonExample() {
-  const [radioValue, setRadioValue] = useState('0');
-
+function ToggleButtonExample(props) {
   const radios = [
     { name: '여행', value: 'Where can I take a taxi downtown?' },
     { name: '음식', value: 'Are you ready to order?' },
@@ -74,9 +78,9 @@ function ToggleButtonExample() {
           variant='secondary'
           name='radio'
           value={radio.value}
-          checked={radioValue === radio.value}
-          onChange={(e) => setRadioValue(e.currentTarget.value)}
-          onClick={(e) => btn_subject_ck(e.currentTarget.value)}
+          checked={props.radioValue === radio.value}
+          onChange={(e) => props.setRadioValue(e.currentTarget.value)}
+          onClick={(e) => {btn_subject_ck(e.currentTarget.value); props.setSubject(radio.name); props.setRadioValue(radio.value)}}
           className='w-25 fs-3'>
           {radio.name}
         </ToggleButton>
@@ -90,7 +94,7 @@ function btn_record_refresh() {
   $record.innerHTML = '';
 }
 
-function MainContent() {
+function MainContent(props) {
   return (
     <Container className='mt-5 bg-light' id='main-page'>
       <Row>
@@ -109,14 +113,16 @@ function MainContent() {
       </Row>
       <Row className='mt-2'>
         <ButtonGroup className='mb-2'>
-          <ToggleButtonExample />
+          <ToggleButtonExample setSubject={props.setSubject} radioValue={props.radioValue} setRadioValue={props.setRadioValue}/>
         </ButtonGroup>
       </Row>
     </Container>
   );
 }
 
-function MainDialog() {
+function MainDialog(props) {
+  const conversationArray = props.conversationArray;
+
   return (
     <Container id='dialog-page' className='bg-light mt-3'>
       <Row id='dialog'>
@@ -164,7 +170,13 @@ function MainDialog() {
         </Col>
         <Col className="p-0">
           <Row id='list-area' className="w-100 m-0">
-            <Col id='list-record' className='bg-warning bg-gradient'></Col>
+            <Col id='list-record' className='bg-warning bg-gradient' style={{padding: '10px', height: '320px', overflow: 'auto'}}>
+              {conversationArray.map((conversation, idx) => (
+                conversation['USER'] !== undefined 
+                ? <MessageRight key={idx} message={conversation['USER']} />
+                : <MessageLeft key={idx} message={conversation['AI']} />
+              ))}
+            </Col>
           </Row>
         </Col>
       </Row>
@@ -178,6 +190,37 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
     margin: theme.spacing(0),
   },
+  paper: {
+    width: "80vw",
+    height: "80vh",
+    maxWidth: "500px",
+    maxHeight: "700px",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    position: "relative"
+  },
+  paper2: {
+    width: "80vw",
+    maxWidth: "500px",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    position: "relative"
+  },
+  container: {
+    width: "100vw",
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  messagesBody: {
+    width: "calc( 100% - 20px )",
+    margin: 10,
+    overflowY: "scroll",
+    height: "calc( 100% - 80px )"
+  },
 }));
 
 const sessionName = Math.random().toString(36).substr(2, 11);
@@ -185,6 +228,8 @@ const sessionName = Math.random().toString(36).substr(2, 11);
 function MainPage() {
   const theme = useTheme();
   const classes = useStyles();
+  const [subject, setSubject] = useState('');
+  const [radioValue, setRadioValue] = useState('');
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [voiceBlob, setVoiceBlob] = useState('');
@@ -200,10 +245,11 @@ function MainPage() {
     setLoading(true);
 
     let converationArrayAdd = conversationArray;
-    converationArrayAdd.push(conversation);
+    converationArrayAdd.push({USER: conversation});
 
     try {
       const response = await axios.post('/api/caii_en/request/conversation', {
+        subject: subject,
         session_name: sessionName,
         conversation: conversation,
       });
@@ -218,7 +264,7 @@ function MainPage() {
       setVoiceBlob(url);
 
       const responseAIConversation = response.data.AIConversation;
-      converationArrayAdd.push(responseAIConversation);
+      converationArrayAdd.push({AI: responseAIConversation});
       setConversationArray(converationArrayAdd);
 
       return url;
@@ -270,6 +316,8 @@ function MainPage() {
     recognition.continuous = true;
     recognition.interimResults = true;
 
+    $('#list-record').scrollTop($('#list-record').prop('scrollHeight'));
+
     /**
      * 음성 인식 시작 처리
      */
@@ -316,7 +364,7 @@ function MainPage() {
 
         if (event.results[i].isFinal) {
           finalTranscript = transcript;
-          $record.innerHTML += '<div>You : ' + finalTranscript + '</div>';
+          // $record.innerHTML += '<div>You : ' + finalTranscript + '</div>';
         } else {
           interimTranscript = transcript;
         }
@@ -436,11 +484,26 @@ function MainPage() {
     initialize();
   });
 
+  useEffect(() => {
+    if (subject !== '' && radioValue !== '') {
+      let AIFirstSound;
+      if (subject === '여행') AIFirstSound = travel;
+      else if (subject === '음식') AIFirstSound = food;
+      else if (subject === '음악') AIFirstSound = music;
+      else if (subject === '스포츠') AIFirstSound = sports;
+      setVoiceBlob(AIFirstSound);
+      setPlaying(true)
+
+      const conversationArrayAdd = conversationArray
+      conversationArrayAdd.push({AI: radioValue})
+    }
+  }, [subject, radioValue])
+
   return (
     <Box>
       <div className='MainPage'>
-        <MainContent />
-        <MainDialog />
+        <MainContent setSubject={setSubject} radioValue={radioValue} setRadioValue={setRadioValue}/>
+        <MainDialog conversationArray={conversationArray}/>
       </div>
 
       <ReactPlayer
@@ -459,7 +522,7 @@ function MainPage() {
           통신이 원활하지 않습니다.
         </Alert>
       </Snackbar>
-
+      
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color='inherit' />
       </Backdrop>

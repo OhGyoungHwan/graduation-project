@@ -7,9 +7,26 @@ from blender_bot_1_400M import request_blenderbot
 
 
 session = {}
-def create_session(session_name):
+def get_AI_first_conversation(subject):
+    AI_first_conversation = ''
+    if subject == '여행':
+        AI_first_conversation = 'Where can I take a taxi downtown?'
+    elif subject == '음식':
+        AI_first_conversation = 'Are you ready to order?'
+    elif subject == '음악':
+        AI_first_conversation = 'What are you listening to?'
+    elif subject == '스포츠':
+        AI_first_conversation = 'Do you go in for any sports?'
+
+    return AI_first_conversation
+
+
+def create_session(subject, session_name):
     if session.get(session_name) is None:
-        session[session_name] = [None]
+        if subject is None:
+            session[session_name] = [None]
+        else:
+            session[session_name] = [None, get_AI_first_conversation(subject)]
 
 
 def update_session_time(session_name):
@@ -28,8 +45,8 @@ def delete_session_schedule():
     threading.Timer(60, delete_session_schedule).start()
 
 
-def session_manager(session_name):
-    create_session(session_name)
+def session_manager(subject, session_name):
+    create_session(subject, session_name)
     update_session_time(session_name)
 
 
@@ -60,7 +77,6 @@ def response_callbot(session_name, conversation):
 def get_last_conversation(session_name):
     if session_name in session:
         session_last_index = len(session[session_name]) - 1
-        print(session[session_name][session_last_index])
         return session[session_name][session_last_index]
     else:
         return None
