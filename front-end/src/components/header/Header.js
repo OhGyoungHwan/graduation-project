@@ -14,6 +14,8 @@ import FeedbackDialog from './FeedbackDialog';
 import MenuListComposition from './MenuListComposition';
 import AccountManagementMenu from './AccountManagementMenu';
 import LeftDrawer from './LeftDrawer';
+import jquery from 'jquery';
+import $ from 'jquery';
 
 import { onClickExternLink } from '../../functions/util';
 
@@ -138,7 +140,6 @@ function Header(props) {
           <div style={{ flexGrow: 1 }} />
 
           {xsm ? <MenuListComposition /> : undefined}
-
           {isLoggedIn ? loginLayout : loginButton}
         </Toolbar>
       </AppBar>

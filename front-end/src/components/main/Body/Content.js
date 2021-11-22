@@ -21,6 +21,7 @@ import {
   Button,
   ButtonGroup,
   ToggleButton,
+  Toast,
 } from 'react-bootstrap';
 import {
   Box,
@@ -61,6 +62,14 @@ function btn_list_ck() {
   }
 }
 
+function btn_before_ck() {
+  if (document.getElementById('beforerow').style.display == 'none') {
+    document.getElementById('card_btn_row').remove();
+    document.getElementById('subject_btn_row').remove();
+    document.getElementById('beforerow').style.display = 'flex';
+  }
+}
+
 function ToggleButtonExample(props) {
   const radios = [
     { name: '여행', value: 'Where can I take a taxi downtown?' },
@@ -95,9 +104,15 @@ function btn_record_refresh() {
 }
 
 function MainContent(props) {
+  const [showA, setShowA] = useState(true);
+  const [showB, setShowB] = useState(true);
+
+  const toggleShowA = () => setShowA(!showA);
+  const toggleShowB = () => setShowB(!showB);
+
   return (
     <Container className='mt-5 bg-light' id='main-page'>
-      <Row>
+      <Row id="card_btn_row">
         <Col>
           <Card border="success" className="bg-success text-white">
               <Card.Img src={Sl1} alt="Card image" />
@@ -111,10 +126,45 @@ function MainContent(props) {
             </Card>
         </Col>
       </Row>
-      <Row className='mt-2'>
+      <Row className='mt-2' id='subject_btn_row'>
         <ButtonGroup className='mb-2'>
           <ToggleButtonExample setSubject={props.setSubject} radioValue={props.radioValue} setRadioValue={props.setRadioValue}/>
         </ButtonGroup>
+        <Button onClick={btn_before_ck} variant="outline-light" className="bg-secondary">이전대화 목록</Button>
+      </Row>
+      <Row id="beforerow" style={{display:'none'}}>
+          <Col md={4} className="mb-2">
+            <Button onClick={toggleShowA} className="mb-2" style={{display: 'none'}}>
+              Toggle Toast <strong>with</strong> Animation
+            </Button>
+            <Toast show={showA} onClose={toggleShowA}>
+              <Toast.Header>
+                <img
+                  src="holder.js/20x20?text=%20"
+                  className="rounded me-2"
+                  alt=""
+                />
+                <strong className="me-auto">n번째 대화기록</strong>
+              </Toast.Header>
+              <Toast.Body className="overflow-scroll" style={{height: '20vw'}}>대화내용</Toast.Body>
+            </Toast>
+          </Col>
+          <Col md={4} className="mb-2">
+            <Button onClick={toggleShowB} className="mb-2" style={{display: 'none'}}>
+              Toggle Toast <strong>with</strong> Animation
+            </Button>
+            <Toast show={showB} onClose={toggleShowB}>
+              <Toast.Header>
+                <img
+                  src="holder.js/20x20?text=%20"
+                  className="rounded me-2"
+                  alt=""
+                />
+                <strong className="me-auto">n번째 대화기록</strong>
+              </Toast.Header>
+              <Toast.Body className="overflow-scroll" style={{height: '20vw'}}>대화내용</Toast.Body>
+            </Toast>
+          </Col>
       </Row>
     </Container>
   );
@@ -170,7 +220,7 @@ function MainDialog(props) {
         </Col>
         <Col className="p-0">
           <Row id='list-area' className="w-100 m-0">
-            <Col id='list-record' className='bg-warning bg-gradient' style={{padding: '10px', height: '576px', margin: 0, overflow: 'auto'}}>
+            <Col id='list-record' className='bg-warning bg-gradient overflow-scroll' style={{padding: '10px', height: '30vw', margin: 0}}>
               {conversationArray.map((conversation, idx) => (
                 conversation['User'] !== undefined 
                 ? <MessageRight key={idx} message={conversation['User']} />
