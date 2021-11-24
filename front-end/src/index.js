@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -37,7 +38,14 @@ const theme = createTheme({
 });
 
 export const store = createStore(reducers, applyMiddleware(thunk));
-
+/*
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+*/
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
@@ -46,3 +54,4 @@ ReactDOM.render(
   </MuiThemeProvider>,
   document.getElementById('root'),
 );
+reportWebVitals();

@@ -1,6 +1,7 @@
 import './Main.css';
 import Box from '@material-ui/core/Box';
 import React from 'react';
+import * as OneSignal from 'onesignal-node'; 
 
 import { useTheme, useMediaQuery } from '@material-ui/core';
 
