@@ -130,9 +130,14 @@ function MainContent(props) {
         <ButtonGroup className='mb-2'>
           <ToggleButtonExample setSubject={props.setSubject} radioValue={props.radioValue} setRadioValue={props.setRadioValue}/>
         </ButtonGroup>
-        <Button onClick={btn_before_ck} variant="outline-light" className="bg-secondary">이전대화 목록</Button>
+        <Button onClick={() => {
+          props.currentId === undefined ? window.location.assign('https://sumai.co.kr/login?url=' + window.location.href) : btn_before_ck(); 
+          props.requestPrevConvHistory()
+        }} 
+        variant="outline-light" className="bg-secondary">이전대화 목록</Button>
       </Row>
       <Row id="beforerow" style={{display:'none'}}>
+          {props.prevConvHistory.slice(0).reverse().map((convHistory, idx) => (
           <Col md={4} className="mb-2">
             <Button onClick={toggleShowA} className="mb-2" style={{display: 'none'}}>
               Toggle Toast <strong>with</strong> Animation
@@ -144,11 +149,18 @@ function MainContent(props) {
                   className="rounded me-2"
                   alt=""
                 />
-                <strong className="me-auto">n번째 대화기록</strong>
+                <strong className="me-auto">{props.prevConvHistory.length - idx}번째 대화기록</strong>
               </Toast.Header>
-              <Toast.Body className="overflow-scroll" style={{height: '20vw'}}>대화내용</Toast.Body>
+              <Toast.Body className="overflow-scroll" style={{height: '20vw'}}>
+                {convHistory.map((conv, idx) => (
+                  conv['speaker'] === 'USER' 
+                  ? <MessageRight key={idx} message={conv['conversation']} />
+                  : <MessageLeft key={idx} message={conv['conversation']} />
+                ))}
+              </Toast.Body>
             </Toast>
           </Col>
+          ))}
           <Col md={4} className="mb-2">
             <Button onClick={toggleShowB} className="mb-2" style={{display: 'none'}}>
               Toggle Toast <strong>with</strong> Animation
@@ -285,6 +297,8 @@ function MainPage() {
   const [voiceBlob, setVoiceBlob] = useState('');
   const [requestFailed, setRequestFailed] = useState(false);
   const [conversationArray, setConversationArray] = useState([]);
+  const [prevConvHistory, setPrevConvHistory] = useState([]);
+  const currentId = useSelector((store) => store.authentication.status.currentId);
 
   const matches = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -302,6 +316,7 @@ function MainPage() {
         subject: subject,
         session_name: sessionName,
         conversation: conversation,
+        numConv: conversationArray.length,
       });
 
       const responseBlob = response.data.blob.buffer.data;
@@ -318,6 +333,21 @@ function MainPage() {
       setConversationArray(converationArrayAdd);
 
       return url;
+    } catch (e) {
+      setRequestFailed(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const requestPrevConvHistory = async () => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/caii_en/request/prevConvHistory');
+      const resPrevConvHistory = response.data.prev_conv_history;
+      setPrevConvHistory(resPrevConvHistory);
+      return resPrevConvHistory;
     } catch (e) {
       setRequestFailed(true);
     } finally {
@@ -552,7 +582,8 @@ function MainPage() {
   return (
     <Box>
       <div className='MainPage'>
-        <MainContent setSubject={setSubject} radioValue={radioValue} setRadioValue={setRadioValue}/>
+        <MainContent setSubject={setSubject} radioValue={radioValue} setRadioValue={setRadioValue} 
+        currentId={currentId} requestPrevConvHistory={requestPrevConvHistory} prevConvHistory={prevConvHistory}/>
         <MainDialog conversationArray={conversationArray}/>
       </div>
 
