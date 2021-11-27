@@ -161,22 +161,6 @@ function MainContent(props) {
             </Toast>
           </Col>
           ))}
-          <Col md={4} className="mb-2">
-            <Button onClick={toggleShowB} className="mb-2" style={{display: 'none'}}>
-              Toggle Toast <strong>with</strong> Animation
-            </Button>
-            <Toast show={showB} onClose={toggleShowB}>
-              <Toast.Header>
-                <img
-                  src="holder.js/20x20?text=%20"
-                  className="rounded me-2"
-                  alt=""
-                />
-                <strong className="me-auto">n번째 대화기록</strong>
-              </Toast.Header>
-              <Toast.Body className="overflow-scroll" style={{height: '20vw'}}>대화내용</Toast.Body>
-            </Toast>
-          </Col>
       </Row>
     </Container>
   );
