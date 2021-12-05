@@ -10,6 +10,7 @@ import reducers from './reducers';
 import thunk from 'redux-thunk';
 
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import OneSignal from 'react-onesignal';
 
 import * as root from './rootValue';
 
@@ -55,3 +56,7 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 reportWebVitals();
+
+OneSignal.init({
+  appId: "4c98f8db-528d-4b71-9a41-0d2cd9c5c7ac"
+});
